@@ -14,11 +14,25 @@
             type="text"
             class="form-control shadow-effect w"
             placeholder="Add New Categories"
+            #newCategory="ngModel"
             ngModel
+            required
+            [ngClass]="{
+              'is-invalid': newCategory.invalid && newCategory.touched
+            }"
           />
+          <div
+            class="alert alert-danger"
+            *ngIf="newCategory.touched && newCategory.invalid"
+          >
+            Category field is required
+          </div>
         </div>
         <div class="col-md-2">
-          <button class="btn btn-block btn-info mb-2 btn-theme">
+          <button
+            class="btn btn-block btn-info mb-2 btn-theme"
+            [disabled]="categoryForm.invalid"
+          >
             Add Category
           </button>
         </div>

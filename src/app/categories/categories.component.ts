@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { CategoriesService } from '../services/categories.service';
+import { Category } from '../models/category';
 
 @Component({
   selector: 'app-categories',
@@ -7,20 +8,13 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
   styleUrls: ['./categories.component.css'],
 })
 export class CategoriesComponent implements OnInit {
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private categoryService: CategoriesService) {}
   ngOnInit(): void {}
   onSubmit(formData: any) {
-    let categoryData = {
+    let categoryData: Category = {
       category: formData.value.category,
     };
-    this.firestore
-      .collection('category')
-      .add(categoryData)
-      .then((docRef) => {
-        console.log(docRef);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    this.categoryService.saveData(categoryData);
   }
 }
