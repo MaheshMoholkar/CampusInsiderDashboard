@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Post } from 'src/app/models/post';
 import { CategoriesService } from 'src/app/services/categories.service';
+import { PostsService } from 'src/app/services/posts.service';
 
 @Component({
   selector: 'app-new-post',
@@ -18,11 +20,12 @@ export class NewPostComponent implements OnInit {
 
   constructor(
     private categoryService: CategoriesService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private postService: PostsService
   ) {
     this.postForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(10)]],
-      permalink: ['', Validators.required],
+      permalink: [{ value: '', disabled: true }, [Validators.required]],
       excerpt: ['', [Validators.required, Validators.minLength(50)]],
       category: ['', Validators.required],
       postImg: ['', Validators.required],
@@ -52,5 +55,27 @@ export class NewPostComponent implements OnInit {
     };
     reader.readAsDataURL($event.target.files[0]);
     this.selectedImg = $event.target.files[0];
+  }
+
+  onSubmit() {
+    let splitted = this.postForm.value.category.split('-');
+    const postData: Post = {
+      title: this.postForm.value.title,
+      permalink: this.postForm.get('permalink')!.value,
+      category: {
+        categoryId: splitted[0],
+        category: splitted[1],
+      },
+      postImgPath: '',
+      excerpt: this.postForm.value.excerpt,
+      content: this.postForm.value.content,
+      isFeatured: false,
+      views: 0,
+      status: 'new',
+      createdAt: new Date(),
+    };
+    this.postService.uploadImage(this.selectedImg, postData);
+    this.postForm.reset();
+    this.imgSrc = './assets/placeholder-image.jpg';
   }
 }
