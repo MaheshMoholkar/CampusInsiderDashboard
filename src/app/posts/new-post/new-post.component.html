@@ -1,1 +1,115 @@
-<p>new-post works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h3 class="text-theme-primary">Add New Post</h3>
+      <p class="mb-5">You can add your new post here</p>
+    </div>
+  </div>
+
+  <form [formGroup]='postForm'>
+    <div class="row">
+      <div class="col-md-7">
+        <div class="card shadow-effect">
+          <div class="card-body">
+            <div class="form-group">
+              <label>Title</label>
+              <input
+                type="text"
+                class="form-control"
+                (keyup)="onTitleChanged($event)"
+                formControlName="title"
+                [ngClass]="{'is-invalid': formControl['title']['touched'] &&
+                formControl['title']['invalid']}"
+              />
+              <div *ngIf="formControl['title']['errors']?.['required']">
+                <div
+                  class="alert alert-danger"
+                  *ngIf="
+                    formControl['title']['touched'] &&
+                    formControl['title']['invalid']
+                  "
+                >
+              <div *ngIf="formControl['title']['errors']?.['minlength']">
+                <div
+                  class="alert alert-danger"
+                  *ngIf="
+                    formControl['title']['touched'] &&
+                    formControl['title']['invalid']
+                  "
+                >
+                  Title must be atleast 10 characters long.
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Permalink</label>
+              <input
+                type="text"
+                name="permalink"
+                class="form-control"
+                [(ngModel)]="permalink"
+                formControlName="permalink"
+              />
+            </div>
+            <div class="form-group">
+              <label>Excerpt</label>
+              <textarea
+                cols="30"
+                rows="10"
+                class="form-control"
+                formControlName="excerpt"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <label for="">Select a post category</label>
+          <select class="form-control" formControlName="category">
+            <option value="" disabled>Select a category</option>
+            <option *ngFor="let category of categories" value="">
+              {{ category.data.category }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="">Post Image</label>
+          <img
+            [src]="imgSrc"
+            class="form-control img-fluid img-preview"
+            alt=""
+          />
+          <input
+            type="file"
+            class="form-control"
+            accept="image/*"
+            (change)="showPreview($event)"
+            formControlName="postImg"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3 mb-5">
+      <div class="col-md-12">
+        <div class="card shadow-effect">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="">Content</label>
+              <angular-editor
+                placeholder="Add your content here"
+                formControlName="content"
+              ></angular-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 text-center mt-5">
+        <button class="btn btn-info bg-theme">Save Post</button>
+        <button class="btn btn-warning ml-3" routerLink="/posts">
+          Back to Post
+        </button>
+      </div>
+    </div>  
+  </form>
+</div>
