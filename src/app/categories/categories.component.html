@@ -1,7 +1,9 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12 bg-secondary-theme p-5 shadow-effect">
-      <h3 class="text-center text-theme-primary">New Categories</h3>
+      <h3 class="text-center text-theme-primary">
+        {{ formStatus }} Categories
+      </h3>
       <p class="text-center mb-5">You can add new categories from here...!</p>
       <form
         class="form-inline text-center"
@@ -15,7 +17,7 @@
             class="form-control shadow-effect w"
             placeholder="Add New Categories"
             #newCategory="ngModel"
-            ngModel
+            [(ngModel)]="formCategory"
             required
             [ngClass]="{
               'is-invalid': newCategory.invalid && newCategory.touched
@@ -33,10 +35,49 @@
             class="btn btn-block btn-info mb-2 btn-theme"
             [disabled]="categoryForm.invalid"
           >
-            Add Category
+            {{ formStatus }} Category
           </button>
         </div>
       </form>
     </div>
+  </div>
+  <div class="row mt-5 mb-5">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <div class="card shadow-effect">
+        <div class="card-body">
+          <table class="table row-border hover">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let category of categoryArray; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ category.data.category }}</td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-warning"
+                    (click)="onEdit(category.data.category, category.id)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-sm btn-danger ml-2"
+                    (click)="onDelete(category.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3"></div>
   </div>
 </div>
