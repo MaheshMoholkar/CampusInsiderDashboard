@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 import { environment } from 'src/environments/environment.prod';
 
@@ -46,6 +47,7 @@ import { LoginComponent } from './auth/login/login.component';
     HttpClientModule,
     ReactiveFormsModule,
     AngularFireStorageModule,
+    AngularFireAuthModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
