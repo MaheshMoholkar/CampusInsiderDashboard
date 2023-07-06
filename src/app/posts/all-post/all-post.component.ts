@@ -15,4 +15,15 @@ export class AllPostComponent implements OnInit {
       this.postArray = data;
     });
   }
+
+  onDelete(postImgPath: string, id: any) {
+    this.postService.deleteImage(postImgPath, id);
+  }
+  onFeatured(id: any, value: boolean) {
+    const featuredData = {
+      isFeatured: value,
+    };
+
+    this.postService.markFeatured(id, featuredData);
+  }
 }

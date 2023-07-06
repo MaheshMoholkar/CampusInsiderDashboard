@@ -16,7 +16,7 @@ export class PostsService {
     private router: Router
   ) {}
 
-  uploadImage(image: any, postData: any) {
+  uploadImage(image: any, postData: any, formStatus: any, id: any) {
     const filePath = `postIMG/${Date.now()}`;
 
     this.storage.upload(filePath, image).then(() => {
@@ -25,7 +25,11 @@ export class PostsService {
         .getDownloadURL()
         .subscribe((url) => {
           postData.postImgPath = url;
-          this.saveData(postData);
+          if (formStatus == 'Edit') {
+            this.updateData(id, postData);
+          } else {
+            this.saveData(postData);
+          }
         });
     });
   }
@@ -53,5 +57,46 @@ export class PostsService {
           });
         })
       );
+  }
+
+  loadOneData(id: any) {
+    return this.firestore.doc(`posts/${id}`).valueChanges();
+  }
+
+  updateData(id: any, postData: any) {
+    this.firestore
+      .doc(`posts/${id}`)
+      .update(postData)
+      .then(() => {
+        this.toastr.success('Updated Post Successfully');
+        this.router.navigate(['/posts']);
+      });
+  }
+
+  deleteImage(postImgPath: string, id: any) {
+    this.storage.storage
+      .refFromURL(postImgPath)
+      .delete()
+      .then(() => {
+        this.deleteData(id);
+      });
+  }
+
+  deleteData(id: any) {
+    this.firestore
+      .doc(`posts/${id}`)
+      .delete()
+      .then(() => {
+        this.toastr.warning('Deleted Successfully');
+      });
+  }
+
+  markFeatured(id: any, featuredData: any) {
+    this.firestore
+      .doc(`posts/${id}`)
+      .update(featuredData)
+      .then(() => {
+        this.toastr.info('Featured Status Changed');
+      });
   }
 }

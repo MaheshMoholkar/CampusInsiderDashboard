@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Post } from 'src/app/models/post';
 import { CategoriesService } from 'src/app/services/categories.service';
 import { PostsService } from 'src/app/services/posts.service';
@@ -18,18 +19,58 @@ export class NewPostComponent implements OnInit {
 
   postForm!: FormGroup;
 
+  post: any;
+
+  formStatus: string = 'Add New';
+
+  docId!: string;
+
   constructor(
     private categoryService: CategoriesService,
     private formBuilder: FormBuilder,
-    private postService: PostsService
+    private postService: PostsService,
+    private route: ActivatedRoute
   ) {
-    this.postForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(10)]],
-      permalink: [{ value: '', disabled: true }, [Validators.required]],
-      excerpt: ['', [Validators.required, Validators.minLength(50)]],
-      category: ['', Validators.required],
-      postImg: ['', Validators.required],
-      content: ['', Validators.required],
+    this.route.queryParams.subscribe((params) => {
+      this.docId = params['id'];
+
+      if (this.docId) {
+        this.postService.loadOneData(params['id']).subscribe((data) => {
+          this.post = data;
+
+          this.postForm = this.formBuilder.group({
+            title: [
+              this.post.title,
+              [Validators.required, Validators.minLength(10)],
+            ],
+            permalink: [
+              { value: this.post.permalink, disabled: true },
+              [Validators.required],
+            ],
+            excerpt: [
+              this.post.excerpt,
+              [Validators.required, Validators.minLength(50)],
+            ],
+            category: [
+              `${this.post.category.categoryId}-${this.post.category.category}`,
+              Validators.required,
+            ],
+            postImg: ['', Validators.required],
+            content: [this.post.content, Validators.required],
+          });
+          this.imgSrc = this.post.postImgPath;
+          this.formStatus = 'Edit';
+        });
+      } else {
+        this.postForm = this.formBuilder.group({
+          title: ['', [Validators.required, Validators.minLength(10)]],
+          permalink: [{ value: '', disabled: true }, [Validators.required]],
+          excerpt: ['', [Validators.required, Validators.minLength(50)]],
+          category: ['', Validators.required],
+          postImg: ['', Validators.required],
+          content: ['', Validators.required],
+        });
+      }
     });
   }
 
@@ -74,7 +115,12 @@ export class NewPostComponent implements OnInit {
       status: 'new',
       createdAt: new Date(),
     };
-    this.postService.uploadImage(this.selectedImg, postData);
+    this.postService.uploadImage(
+      this.selectedImg,
+      postData,
+      this.formStatus,
+      this.docId
+    );
     this.postForm.reset();
     this.imgSrc = './assets/placeholder-image.jpg';
   }
