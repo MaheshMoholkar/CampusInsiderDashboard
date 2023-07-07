@@ -5,9 +5,10 @@ import { CategoriesComponent } from './categories/categories.component';
 import { AllPostComponent } from './posts/all-post/all-post.component';
 import { NewPostComponent } from './posts/new-post/new-post.component';
 import { LoginComponent } from './auth/login/login.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
 
   { path: 'categories', component: CategoriesComponent },
