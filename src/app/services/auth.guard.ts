@@ -1,18 +1,24 @@
 import {
   ActivatedRouteSnapshot,
   CanActivate,
+  Router,
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
 import { AuthService } from './auth.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -25,6 +31,8 @@ export class AuthGuard implements CanActivate {
     if (this.authService.isLoggedInGuard) {
       return true;
     } else {
+      this.toastr.warning('Not Authorized');
+      this.router.navigate(['/login']);
       return false;
     }
   }
