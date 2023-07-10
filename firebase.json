@@ -1,1 +1,10 @@
-{}
+{
+  "hosting": {
+    "public": "dist\\campus-insider-dashboard",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
